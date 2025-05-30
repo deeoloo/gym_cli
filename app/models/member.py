@@ -15,14 +15,24 @@ class Member(Base):
 
     @classmethod
     def create(cls, name, email):
+        import re
         session = Session()
         try:
-            member = cls(name=name, 
-                         email=email,
-                         join_date= join_date or datetime.utcnow())
+            clean_email = email.strip().lower()
+        
+        # Simplified email regex
+            if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", clean_email):
+                raise ValueError("Invalid email format.")
+
+        # Check for existing email (case-insensitive)
+            existing = session.query(cls).filter(cls.email.ilike(clean_email)).first()
+            if existing:
+                raise ValueError("Email already exists. Please use a different email")
+
+            member = cls(name=name.strip(), email=clean_email)
             session.add(member)
             session.commit()
-            return member
+            return {"id": member.id, "name": member.name, "email": member.email}
         except Exception as e:
             session.rollback()
             raise e
@@ -43,7 +53,14 @@ class Member(Base):
         session.close()
         return member
     
-    # In member.py
+    @classmethod
+    def find_by_name(cls, name):
+        session = Session()
+        try:
+            return session.query(cls).filter(cls.name.ilike(f"%{name.strip()}%")).all()
+        finally:
+            session.close()
+
     @classmethod
     def update_email(cls, member_id, new_email):
         session = Session()

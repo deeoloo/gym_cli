@@ -1,36 +1,44 @@
-import click
-from .models.member import Member
-from .models.workout import Workout
-from .models.exercise import Exercise
-from .menus import main_menu, member_menu, workout_menu, exercise_menu
-from .actions import handle_member_actions, handle_workout_actions, handle_exercise_actions
+import os
+from app.menus import main_menu, member_menu, workout_menu, exercise_menu
+from app.actions import handle_member_actions, handle_workout_actions, handle_exercise_actions
 
-@click.group()
-def cli():
-    """Gym Management System CLI"""
-    pass
+def setup():
+    """Initialize the database (run this first)"""
+    print("✅ Database created successfully!")
 
-@cli.command()
 def start():
-    """Start the interactive CLI"""
+    """Start the interactive gym management system"""
     while True:
         choice = main_menu()
         
-        if choice == "1":  # Members
-            member_choice = member_menu()
-            handle_member_actions(member_choice)
+        # Member management
+        if choice == "1":
+            while True:
+                member_choice = member_menu()
+                if member_choice == "4":  # Back to main menu
+                    break
+                handle_member_actions(member_choice)
         
-        elif choice == "2":  # Workouts
-            workout_choice = workout_menu()
-            handle_workout_actions(workout_choice)
+        # Workout management
+        elif choice == "2":
+            while True:
+                workout_choice = workout_menu()
+                if workout_choice == "3":  # Back to main menu
+                    break
+                handle_workout_actions(workout_choice)
         
-        elif choice == "3":  # Exercises
-            exercise_choice = exercise_menu()
-            handle_exercise_actions(exercise_choice)
+        # Exercise management
+        elif choice == "3":
+            while True:
+                exercise_choice = exercise_menu()
+                if exercise_choice == "3":  # Back to main menu
+                    break
+                handle_exercise_actions(exercise_choice)
         
-        elif choice == "4":  # Exit
-            click.echo("Goodbye!")
+        # Exit
+        elif choice == "4":
+            print("\nGoodbye! 👋")
             break
 
 if __name__ == '__main__':
-    cli()
+    start()

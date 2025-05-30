@@ -22,11 +22,11 @@ class Workout(Base):
         session = Session()
         try:
             workout = cls(member_id= member_id,
-                          duration= duration,
-                           workout_type= workout_type)
+                        duration= duration,
+                        workout_type= workout_type)
             session.add(workout)
             session.commit()
-            return workout
+            return {"id": workout.id, "member_id": workout.member_id, "duration": workout.duration, "workout_type":workout.workout_type, "date": workout.date }
         except Exception as e:
             session.rollback()
             raise e

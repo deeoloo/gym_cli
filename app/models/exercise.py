@@ -28,12 +28,18 @@ class Exercise(Base):
                            weight= weight)
             session.add(exercise)
             session.commit()
-            return exercise
+            return {"id": exercise.id, "name": exercise.name,"workout_id": exercise.workout_id, "sets":exercise.sets,"reps": exercise.reps, "weight":exercise.weight}
         except Exception as e:
             session.rollback()
             raise e
         finally:
             session.close()
+
+    @classmethod
+    def get_by_workout(cls,workout_id):
+        from app.models.base import Session
+        session = Session()
+        return session.query(cls).filter_by(workout_id=workout_id).all()
     
     @property
     def volume(self):

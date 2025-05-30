@@ -4,7 +4,4 @@ from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
 engine = create_engine('sqlite:///app/db/gym.db')
-Session = sessionmaker(bind=engine)
-
-def init_db():
-    Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine, expire_on_commit=False)

@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 sqlalchemy = "*"
 click = "*"
+alembic = "*"
+rich = "*"
 
 [dev-packages]
 

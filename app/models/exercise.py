@@ -34,6 +34,15 @@ class Exercise(Base):
             raise e
         finally:
             session.close()
+    @classmethod
+    def get_all(cls):
+        from app.models.base import Session
+        session = Session()
+        try:
+            return session.query(cls).all()
+        finally:
+            session.close()
+
 
     @classmethod
     def get_by_workout(cls,workout_id):

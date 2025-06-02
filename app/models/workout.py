@@ -32,12 +32,35 @@ class Workout(Base):
             raise e
         finally:
             session.close()
+
+    @classmethod
+    def get_all(cls):
+        from app.models.base import Session
+        session = Session()
+        try:
+            return session.query(cls).all()
+        finally:
+            session.close()
+
     
     @classmethod
     def get_by_member(cls, member_id):
         from app.models.base import Session
         session = Session()
         return session.query(cls).filter_by(member_id=member_id).all()
+    
+    @classmethod
+    def search_by_type_or_date(cls, member_id, keyword):
+        session = Session()
+        try:
+            return session.query(cls).filter(
+                cls.member_id == member_id,
+                (cls.workout_type.ilike(f"%{keyword}%")) |
+                (cls.date.ilike(f"%{keyword}%"))
+            ).all()
+        finally:
+            session.close()
+
 
     
     @property

@@ -20,11 +20,11 @@ class Member(Base):
         try:
             clean_email = email.strip().lower()
         
-        # Simplified email regex
+       
             if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", clean_email):
                 raise ValueError("Invalid email format.")
 
-        # Check for existing email (case-insensitive)
+        
             existing = session.query(cls).filter(cls.email.ilike(clean_email)).first()
             if existing:
                 raise ValueError("Email already exists. Please use a different email")
@@ -43,6 +43,9 @@ class Member(Base):
     def get_all(cls):
         session = Session()
         members = session.query(cls).all()
+    # Force-load attributes before closing session
+        for m in members:
+            _ = m.name, m.email, m.join_date  # Preloads all needed attributes
         session.close()
         return members
     
